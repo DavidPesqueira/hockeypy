@@ -7,8 +7,9 @@ import requests
 import json
 from firebaselogin import *
 #import webscrape
-import teamcups #Runs BST Easter Egg
+#import teamcups #Runs BST Easter Egg
 from bs4 import BeautifulSoup
+
 
 '''
 
@@ -24,6 +25,7 @@ The dictionaries below are use to access the NHL api
 that requires the user to enter an ID number rather than
 a team name.
 '''
+
 
 ids = ["1", "2", "3", "4", "5" ,"6", "7","8","9","10",
 "11", "12", "13", "14", "15" ,"16", "17","18","19","20",
@@ -56,7 +58,7 @@ on Firebase and plan on getting that done for soon.
 '''
 
 
-def teamInfo(id): #Team Record
+def teamInfo(anything): #Team Record
 
     teamName = entry.get()
     teamId=name_id_map[teamName]
@@ -70,7 +72,7 @@ def teamInfo(id): #Team Record
     wins =(json.loads(packages_str)['teams'][0]['teamStats'][0]['splits'][0]['stat']['wins'])
     losses =(json.loads(packages_str)['teams'][0]['teamStats'][0]['splits'][0]['stat']['losses'])
 
-    label['text']= "Points", teamPoints, "GP", gamesPlayed, "W's", wins, "L's", losses 
+    label['text']=  teamPoints, "Points,", gamesPlayed, "GP,", wins, "W's,", losses, "L's"
     
 
 def webscrape():
@@ -86,21 +88,48 @@ def webscrape():
 
         label['text']= place, record
 
+'''
+Firebase Begin Def's 
+'''
 
-def loginFirebase():
-    #if request.method == 'POST':
-     #   email = request.form['name']
-      #  password = request.form['pass']
-       # auth.sign_in_with_email_and_password(email, password)
-        #return 
-        root.deiconify() #Unhides the root window
-        top.destroy() #Removes the toplevel window
+def user_login():
+    
+    try:
+        email =  email_entry.get()
+        passwd = passwd_entry.get()
+        user = auth.sign_in_with_email_and_password(email, passwd) #To Sign in
+        auth.get_account_info(user['idToken'])
+           
+        top.destroy() 
+        root.deiconify()
+    except requests.exceptions.HTTPError as e:
+        error_json = e.args[1]
+        print (error_json)
+        error = json.loads(error_json)['error']
+        print(error) 
+
+def user_register():
+    
+    try:
+        email =  email_entry.get()
+        passwd = passwd_entry.get()
+        user = auth.create_user_with_email_and_password(email, passwd) #To Create User
+        auth.get_account_info(user['idToken'])
+           
+        top.destroy() 
+        root.deiconify()
+    except requests.exceptions.HTTPError as e:
+        error_json = e.args[1]
+        print (error_json)
+        error = json.loads(error_json)['error']
+        print(error) 
+
 
 
 def exitProgram():
-    top.destroy() #Removes the toplevel window
-    root.destroy() #Removes the hidden root window
-    sys.exit() #Ends the script
+    top.destroy() 
+    root.destroy()
+    sys.exit() 
 
 def command3():
     top.destroy() #Removes the toplevel window
@@ -110,19 +139,20 @@ def command3():
 '''
 This is the design code for the login screen
 There is something about tkinter that I havn't figured 
-out yet where I can't use the same HEIGHT and WIDTH
+out yet why I can't use the same HEIGHT and WIDTH
 from earlier that I use on my root window, It shows
 up way off if I do, so I needed to declare it's own 
 dimensions and create new lables and background image code,
 rather than just using the same for top and root.
 '''
 topWidth = 400
-topHeight = 200
+topHeight = 400
 canvasLogin = tk.Canvas(top, height=topHeight, width=topWidth)
 canvasLogin.pack()
-background_image2=tk.PhotoImage(file='login.png')
+background_image2=tk.PhotoImage(file='hockey.png')
 backround_label2 = tk.Label(top, image=background_image2)
 backround_label2.place(relwidth=1, relheight=1)
+
 
 
 canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
@@ -141,27 +171,28 @@ used this method of place where you set the coordinates using
 relx, rely, relwidth and relheight to postion things.
 '''
 
-userEmail = Entry(top, font=40) #Username entry
-userEmail.place(relx=.55,relwidth=0.45, relheight=.1) #These pack the elements, this includes the items for the main window
-label2=tk.Label(top)
-label2.place(relx=.01,relwidth=0.3, relheight=.08,)
-label2['text'] = 'Enter Email: '
 
-
-password = Entry(top, font=40) #Password entry
-password.place(relx=.55, rely=.08,relwidth=0.45, relheight=.1) #These pack the elements, this includes the items for the main window
-label2=tk.Label(top)
-label2.place(relx=.01,relwidth=0.3, rely=.09, relheight=.08)
-label2['text'] = 'Enter Password: '
 
 '''
-So as of today the commands for the login window are not yet set
-they are just labeled. 
+This is the code to get the email and password
 '''
-login = Button(top, text="Login", font=40, command=lambda:loginFirebase()) #Login button
+email_entry = tk.Entry(top, font=20) #I'm defining email twice...I'm just confused on how to make this work
+email_entry.place(relx=.55,relwidth=0.45, relheight=.1) 
+label=tk.Label(top)
+label.place(relx=.01,relwidth=0.3, relheight=.08,)
+label['text'] = 'Enter Email: '
+
+passwd_entry = tk.Entry(top, font=20) #Password entry
+passwd_entry.place(relx=.55, rely=.08,relwidth=0.45, relheight=.1)
+label=tk.Label(top)
+label.place(relx=.01,relwidth=0.3, rely=.09, relheight=.08)
+label['text'] = 'Enter Password: '
+
+
+login = Button(top, text="Login", font=40, command=lambda:user_login()) #Login button
 login.place(relx=.55, rely=.2,relwidth=0.45, relheight=.12)
 
-register = Button(top, text="Register", font=40, command=lambda:command3()) #Cancel button
+register = Button(top, text="Register", font=40, command=lambda:user_register()) #Cancel button
 register.place(relx=.01, rely=.21,relwidth=0.5, relheight=.12)
 
 register = Button(top, text="Forgot Password", font=40, command=lambda:command3()) #Cancel button

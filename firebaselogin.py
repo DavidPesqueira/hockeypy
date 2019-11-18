@@ -5,8 +5,12 @@ from flask import *
 import requests
 app = Flask(__name__)
 
-config = {
 
+'''
+Remove api key before commit
+'''
+config = {
+    "apiKey": "YourAPIKEY",
     "authDomain": "hockeypy.firebaseapp.com",
     "databaseURL": "https://hockeypy.firebaseio.com",
     "projectId": "hockeypy",
@@ -16,23 +20,14 @@ config = {
     "measurementId": "G-F64QVYNWE5"
 
 }
-
 Firebase = pyrebase.initialize_app(config)
-
 auth = Firebase.auth()
-
-@app.route('/', methods=['GET', 'POST'])
-
-#Firebase = pyrebase.initialize_app(config)
-
-#auth = Firebase.auth()
-
-#email = input('email\n') #Get Email
-
+#email = input('Type email\n')
 #password = input('Password\n') #input Password
 
 
 #user = auth.create_user_with_email_and_password(email, password) #To Create User
+#auth.get_account_info(user['idToken'])
 
 #user = auth.sign_in_with_email_and_password(email, password) #To Sign in
 
@@ -40,13 +35,4 @@ auth = Firebase.auth()
 
 #auth.send_password_reset_email #Email reset
 
-#auth.get_account_info(user['idToken'])
 
-def loginFirebase():
-    if request.method == 'POST':
-        email = request.form['name']
-        password = request.form['pass']
-        auth.sign_in_with_email_and_password(email, password)
-        return "Login Successfull"
-if __name__ == '__main__':
-    app.run()
