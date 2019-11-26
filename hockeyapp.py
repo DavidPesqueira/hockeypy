@@ -3,21 +3,12 @@
 import importlib
 import tkinter as tk
 from tkinter import *
+import tkinter.font as font
 import requests
 import json
 from firebaselogin import *
-#import webscrape
-#import teamcups #Runs BST Easter Egg
+import teamcups #Runs BST Easter Egg
 from bs4 import BeautifulSoup
-
-
-'''
-
-Variables to avoid magic numbers
-
-'''
-HEIGHT = 380 
-WIDTH = 750
 
 
 '''
@@ -25,7 +16,6 @@ The dictionaries below are use to access the NHL api
 that requires the user to enter an ID number rather than
 a team name.
 '''
-
 
 ids = ["1", "2", "3", "4", "5" ,"6", "7","8","9","10",
 "11", "12", "13", "14", "15" ,"16", "17","18","19","20",
@@ -57,7 +47,6 @@ The Declarations of functions to be used. I am still working
 on Firebase and plan on getting that done for soon. 
 '''
 
-
 def teamInfo(anything): #Team Record
 
     teamName = entry.get()
@@ -76,6 +65,7 @@ def teamInfo(anything): #Team Record
     
 
 def webscrape():
+   
     data = requests.get('https://www.hockey-reference.com/leagues/NHL_2020_standings.html')
     soup = BeautifulSoup(data.text, 'html.parser') # Load data into bs4
     standings = soup.find('table',{'id': 'standings'})
@@ -84,9 +74,9 @@ def webscrape():
     for tr in tbody.find_all('tr'):
         place = tr.find_all('td')[0].text.strip()
         record = tr.find_all('td')[1].text.strip()
-        print(place, record)
-
-        label['text']= place, record
+       
+        label['text']= ("\nTeam name: "+ place+  "\nRecord: "+ record)
+  
 
 '''
 Firebase Begin Def's 
@@ -124,39 +114,32 @@ def user_register():
         error = json.loads(error_json)['error']
         print(error) 
 
-
-
 def exitProgram():
-    top.destroy() 
+    top.destroy()    
     root.destroy()
-    sys.exit() 
+    #teamcups.teamcups()
+    sys.exit()
+    
 
-def command3():
-    top.destroy() #Removes the toplevel window
-    root.destroy() #Removes the hidden root window
-    sys.exit() #Ends the script
 
 '''
 This is the design code for the login screen
-There is something about tkinter that I havn't figured 
-out yet why I can't use the same HEIGHT and WIDTH
-from earlier that I use on my root window, It shows
-up way off if I do, so I needed to declare it's own 
-dimensions and create new lables and background image code,
-rather than just using the same for top and root.
+Using the .geometry feature I can control the window sizes and 
+where they open. 
 '''
-topWidth = 400
-topHeight = 400
-canvasLogin = tk.Canvas(top, height=topHeight, width=topWidth)
+
+canvasLogin = tk.Canvas(top)
 canvasLogin.pack()
+top.geometry('600x400+650+200')
 background_image2=tk.PhotoImage(file='hockey.png')
 backround_label2 = tk.Label(top, image=background_image2)
 backround_label2.place(relwidth=1, relheight=1)
 
 
 
-canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
+canvas = tk.Canvas(root)
 canvas.pack()
+root.geometry('750x350+650+200')
 
 background_image=tk.PhotoImage(file='hockey.png')
 backround_label = tk.Label(root, image=background_image)
@@ -169,37 +152,35 @@ There are a couple different methods of placing items in tkinter
 grid and using place. In my orginal app that I used to upgrade I also
 used this method of place where you set the coordinates using
 relx, rely, relwidth and relheight to postion things.
-'''
 
-
-
-'''
 This is the code to get the email and password
 '''
-email_entry = tk.Entry(top, font=20) #I'm defining email twice...I'm just confused on how to make this work
+email_entry = tk.Entry(top, font=10) 
 email_entry.place(relx=.55,relwidth=0.45, relheight=.1) 
-label=tk.Label(top)
-label.place(relx=.01,relwidth=0.3, relheight=.08,)
+label=tk.Label(top, font=50)
+label.place(relx=.01,relwidth=0.4, relheight=.08)
 label['text'] = 'Enter Email: '
 
-passwd_entry = tk.Entry(top, font=20) #Password entry
-passwd_entry.place(relx=.55, rely=.08,relwidth=0.45, relheight=.1)
-label=tk.Label(top)
-label.place(relx=.01,relwidth=0.3, rely=.09, relheight=.08)
+passwd_entry = tk.Entry(top, font=10) 
+passwd_entry.place(relx=.55, rely=.1,relwidth=0.45, relheight=.1)
+label=tk.Label(top, font=50)
+label.place(relx=.01,relwidth=0.4, rely=.1, relheight=.08)
 label['text'] = 'Enter Password: '
 
 
-login = Button(top, text="Login", font=40, command=lambda:user_login()) #Login button
-login.place(relx=.55, rely=.2,relwidth=0.45, relheight=.12)
+label=tk.Label(top, font=50)
+label.place(relx=.01,relwidth=0.4, rely=.2, relheight=.30,)
+label['text'] = 'To Register,\n use the same input\n as the "Login" fields\n and click the\n Register button'
 
-register = Button(top, text="Register", font=40, command=lambda:user_register()) #Cancel button
-register.place(relx=.01, rely=.21,relwidth=0.5, relheight=.12)
 
-register = Button(top, text="Forgot Password", font=40, command=lambda:command3()) #Cancel button
-register.place(relx=.01, rely=.8,relwidth=0.45, relheight=.1)
+login = Button(top, text="Login", font=40, command=lambda:user_login()) 
+login.place(relx=.55, rely=.3,relwidth=0.45, relheight=.12)
 
-cancel= Button(top, text="Exit", font=40, command=lambda:exitProgram()) #Cancel button
-cancel.place(relx=.01, rely=.9,relwidth=0.45, relheight=.1)
+register = Button(top, text="Register", font=40, command=lambda:user_register()) 
+register.place(relx=.55, rely=.4,relwidth=0.45, relheight=.12)
+
+cancel= Button(top, text="Exit", font=40, command=lambda:exitProgram()) 
+cancel.place(relx=.55, rely=.9,relwidth=0.45, relheight=.1)
 
 '''
 These are the buttons and entries for the main program
@@ -221,18 +202,27 @@ label = tk.Label(lower_frame)
 label.place(relwidth=1, relheight=1)
 
 lower_frame2 =tk.Frame(root, bg='white', bd=10)
-lower_frame2.place(relx=0.125, rely=0.9, relwidth=0.25, relheight=0.1, anchor='w')
+lower_frame2.place(relx=0.125, rely=0.77, relwidth=0.5, relheight=0.1, anchor='w')
 
-button = tk.Button(lower_frame2, text='Live Scores', font=40, command=lambda: webscrape()) 
-button.place(relx=.1, relwidth=.8, relheight=1)
+button = tk.Button(lower_frame2, text='Last Place?', font=40, command=lambda: webscrape()) 
+button.place(relx=.01, relwidth=.4,rely=.01, relheight=1.5)
+
+button = tk.Button(lower_frame2, text='Logout', font=40, command=lambda: exitProgram()) 
+button.place(relx=.5, relwidth=.4, rely=0.01, relheight=1.5)
+
+
 
 
 '''
 These open and close the windows
-and contain the main program loop
+and contain the main program loop. 
+root.withdraw()
+hides the main window, it's still present it just can't be seen or interacted with
 '''
 
 
 if __name__ == "__main__":
-    root.withdraw() #This hides the main window, it's still present it just can't be seen or interacted with
+    root.withdraw() 
     root.mainloop()
+  
+
