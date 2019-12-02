@@ -117,7 +117,7 @@ def user_register():
 def exitProgram():
     top.destroy()    
     root.destroy()
-    teamcups.teamcups()
+
     sys.exit()
     
 
