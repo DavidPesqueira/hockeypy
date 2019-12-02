@@ -9,7 +9,7 @@ app = Flask(__name__)
 Remove api key before commit
 '''
 config = {
-    "apiKey": "",
+    "apiKey": "YOUR_API_KEY_HERE",
     "authDomain": "hockeypy.firebaseapp.com",
     "databaseURL": "https://hockeypy.firebaseio.com",
     "projectId": "hockeypy",
