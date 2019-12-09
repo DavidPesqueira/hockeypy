@@ -25,7 +25,7 @@ teamNames = ["devils", "islanders", "rangers", "flyers",
 "penguins", "bruins","sabers", "canadians","senators",
 "leafs", "thrashers", "canes", "panthers","lightning",
 "caps","hawks","wings","preds","blues","flames","avs",
-"oilers","canucks","Ducks","stars","kings","yotes",
+"oilers","canucks","ducks","stars","kings","yotes",
 "sharks","jackets","wild","jets","knights"]
 name_id_map = {}
 
