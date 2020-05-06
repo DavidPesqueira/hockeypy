@@ -7,7 +7,7 @@ import tkinter.font as font
 import requests
 import json
 from firebaselogin import *
-import teamcups #Runs BST Easter Egg
+
 from bs4 import BeautifulSoup
 
 
